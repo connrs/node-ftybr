@@ -1,0 +1,30 @@
+{
+  "engines": {
+    "node": ">= 0.10"
+  },
+  "name": "ftybr",
+  "description": "Follow the Yellow Brick Road (Router)",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/connrs/node-ftybr.git"
+  },
+  "main": "lib/ftybr.js",
+  "scripts": {
+    "test": "node_modules/tape/bin/tape test/*.js"
+  },
+  "licenses": [
+    {
+      "type": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+  ],
+  "author": "connrs",
+  "dependencies": {
+    "methods": "0.0.1",
+    "url-pattern": "~0.2.1"
+  },
+  "devDependencies": {
+    "tape": "~2.0.0"
+  }
+}
