@@ -32,7 +32,7 @@ test('No routes sets 500 status code', function (t) {
   t.plan(1);
   initRouter();
   resetReqRes();
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
   t.equal(res.statusCode, 500);
 });
 
@@ -43,7 +43,7 @@ test('No routes returns error text', function (t) {
   collectStream(res, function (err, data) {
     t.equal(data, 'Internal Server Error');
   });
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
 });
 
 test('One route unmatched 404 status code', function (t) {
@@ -57,7 +57,7 @@ test('One route unmatched 404 status code', function (t) {
   resetReqRes();
   req.url = 'http://example.com/haha';
   r.registerController(fakeController);
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
   t.equal(res.statusCode, 404);
 });
 
@@ -75,7 +75,7 @@ test('One route unmatched 404 status code', function (t) {
     t.equal(data, 'Not Found');
   });
   r.registerController(fakeController);
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
 });
 
 test('Webroot get action', function (t) {
@@ -95,7 +95,7 @@ test('Webroot get action', function (t) {
     t.equal(data, 'SUCCESSINATOR');
   });
   r.registerController(fakeController);
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
 });
 
 test('Webroot post action', function (t) {
@@ -115,7 +115,7 @@ test('Webroot post action', function (t) {
     t.equal(data, 'SUCCESSINATOR');
   });
   r.registerController(fakeController);
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
 });
 
 test('Register middleware', function (t) {
@@ -125,7 +125,7 @@ test('Register middleware', function (t) {
   r.registerMiddleware(function (req, res, done) {
     t.pass();
   });
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
 });
 
 test('Use middleware', function (t) {
@@ -135,7 +135,7 @@ test('Use middleware', function (t) {
   r.registerMiddleware(function (req, res, done) {
     req.funkmeister = true;
   });
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
   t.equal(req.funkmeister, true);
 });
 
@@ -154,7 +154,7 @@ test('500 Error if middleware error', function (t) {
     done(new Error('MIDDLEWARE ERROR'));
   });
   r.registerController(fakeController);
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
   t.equal(res.statusCode, 500);
 });
 
@@ -177,7 +177,7 @@ test('Custom middleware error if status code set', function (t) {
   collectStream(res, function (err, data) {
     t.equal(data, 'Bad Request');
   });
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
   t.equal(res.statusCode, 400);
 });
 
@@ -204,7 +204,7 @@ test('Error passed to error handler', function (t) {
   });
   r.registerController(fakeController);
   r.registerErrorController(fakeErrorController);
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
 });
 
 test('Error message passed to error handler', function (t) {
@@ -230,7 +230,7 @@ test('Error message passed to error handler', function (t) {
   req.method = 'GET';
   r.registerController(fakeController);
   r.registerErrorController(fakeErrorController);
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
 });
 
 test('Context object passed to error handler', function (t) {
@@ -256,5 +256,5 @@ test('Context object passed to error handler', function (t) {
   req.method = 'GET';
   r.registerController(fakeController);
   r.registerErrorController(fakeErrorController);
-  r.requestListener(req, res);
+  r.requestListener()(req, res);
 });

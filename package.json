@@ -4,7 +4,7 @@
   },
   "name": "ftybr",
   "description": "Follow the Yellow Brick Road (Router)",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/connrs/node-ftybr.git"
