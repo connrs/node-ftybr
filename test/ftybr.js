@@ -142,3 +142,25 @@ test('Error in action is emitted by stream', function (t) {
     res: res
   });
 });
+
+test('Webroot get action with params', function (t) {
+  var fakeController = {
+    getRoutes: function () { return [
+      ['get', '/:name', function (obj, done) {
+        t.equal(obj.params.name, 'NAMEPARAMISHERE');
+      }]
+    ]; }
+  };
+  t.plan(1);
+  initRouter();
+  resetReqRes();
+  req.url = '/NAMEPARAMISHERE';
+  req.method = 'GET';
+  r.registerController(fakeController);
+
+  var request = r.request();
+  request.end({
+    req: req,
+    res: res
+  });
+});
