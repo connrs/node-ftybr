@@ -12,37 +12,21 @@ function resetReqRes() {
   res = new PassThrough();
 }
 
-test('No routes emits 500 status code', function (t) {
+test('No routes returns 500 error', function (t) {
   t.plan(1);
   initRouter();
   resetReqRes();
-
-  var request = r.request();
-  request.on('error', function (err) {
-    t.equal(err.statusCode, 500);
-  });
-  request.end({
-    req: {},
-    res: {}
-  });
+  t.equal(r.getRoute(req).statusCode, 500);
 });
 
 test('No routes returns error text', function (t) {
   t.plan(1);
   initRouter();
   resetReqRes();
-
-  var request = r.request();
-  request.on('error', function (err) {
-    t.equal(err.message, 'Internal Server Error');
-  });
-  request.end({
-    req: {},
-    res: {}
-  });
+  t.equal(r.getRoute(req).message, 'Internal Server Error');
 });
 
-test('One route unmatched 404 status code', function (t) {
+test('Unmatched route returns 404 statusCode', function (t) {
   var fakeController = {
     getRoutes: function () { return [
       ['get', '/', function () {}]
@@ -53,24 +37,14 @@ test('One route unmatched 404 status code', function (t) {
   resetReqRes();
   req.url = 'http://example.com/haha';
   r.registerController(fakeController);
-
-  var request = r.request();
-  request.on('error', function (err) {
-    t.equal(err.statusCode, 404);
-  });
-  request.end({
-    req: req,
-    res: res
-  });
+  t.equal(r.getRoute(req).statusCode, 404);
 });
 
 test('Webroot get action', function (t) {
   var fakeController = {
     getRoutes: function () { return [
-      ['get', '/', function (obj, done) {
-        done(null, {
-          output: 'SUCCESSINATOR'
-        });
+      ['get', '/', {
+        magic: 'object'
       }]
     ]; }
   };
@@ -80,25 +54,13 @@ test('Webroot get action', function (t) {
   req.url = '/';
   req.method = 'GET';
   r.registerController(fakeController);
-
-  var request = r.request();
-  request.on('data', function (obj) {
-    t.equal(obj.output, 'SUCCESSINATOR');
-  });
-  request.end({
-    req: req,
-    res: res
-  });
+  t.equal(r.getRoute(req).magic, 'object');
 });
 
 test('Webroot post action', function (t) {
   var fakeController = {
     getRoutes: function () { return [
-      ['post', '/', function (obj, done) {
-        done(null, {
-          output: 'SUCCESSINATOR'
-        });
-      }]
+      ['post', '/', { output: 'SUCCESSINATOR' }]
     ]; }
   };
   t.plan(1);
@@ -107,48 +69,13 @@ test('Webroot post action', function (t) {
   req.url = '/';
   req.method = 'POST';
   r.registerController(fakeController);
-
-  var request = r.request();
-  request.on('data', function (obj) {
-    t.equal(obj.output, 'SUCCESSINATOR');
-  });
-  request.end({
-    req: req,
-    res: res
-  });
-});
-
-test('Error in action is emitted by stream', function (t) {
-  var fakeController = {
-    getRoutes: function () { return [
-      ['post', '/', function (obj, done) {
-        done(new Error('Random Error Message'));
-      }]
-    ]; }
-  };
-  t.plan(1);
-  initRouter();
-  resetReqRes();
-  req.url = '/';
-  req.method = 'POST';
-  r.registerController(fakeController);
-
-  var request = r.request();
-  request.on('error', function (err) {
-    t.equal(err.message, 'Random Error Message');
-  });
-  request.end({
-    req: req,
-    res: res
-  });
+  t.equal(r.getRoute(req).output, 'SUCCESSINATOR');
 });
 
 test('Webroot get action with params', function (t) {
   var fakeController = {
     getRoutes: function () { return [
-      ['get', '/:name', function (obj, done) {
-        t.equal(obj.params.name, 'NAMEPARAMISHERE');
-      }]
+      ['get', '/:name', { jimbo: 'aeroplane' }]
     ]; }
   };
   t.plan(1);
@@ -157,10 +84,5 @@ test('Webroot get action with params', function (t) {
   req.url = '/NAMEPARAMISHERE';
   req.method = 'GET';
   r.registerController(fakeController);
-
-  var request = r.request();
-  request.end({
-    req: req,
-    res: res
-  });
+  t.equal(r.getRoute(req).params.name, 'NAMEPARAMISHERE');
 });
