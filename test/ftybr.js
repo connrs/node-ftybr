@@ -54,7 +54,7 @@ test('Webroot get action', function (t) {
   req.url = '/';
   req.method = 'GET';
   r.registerController(fakeController);
-  t.equal(r.getRoute(req).magic, 'object');
+  t.equal(r.getRoute(req).action.magic, 'object');
 });
 
 test('Webroot post action', function (t) {
@@ -69,7 +69,7 @@ test('Webroot post action', function (t) {
   req.url = '/';
   req.method = 'POST';
   r.registerController(fakeController);
-  t.equal(r.getRoute(req).output, 'SUCCESSINATOR');
+  t.equal(r.getRoute(req).action.output, 'SUCCESSINATOR');
 });
 
 test('Webroot get action with params', function (t) {
